@@ -1,0 +1,193 @@
+#kth smallest element in an array
+def kth_smallest(arr, k):
+    arr.sort()
+    return arr[k - 1]
+arr = [7, 10, 4, 3, 20, 15]
+k = 3
+print("The", k, "rd smallest element is:", kth_smallest(arr, k))
+
+#problem 2
+def get_min_diff(arr, n, k):
+    arr.sort()
+    ans = arr[-1] - arr[0]
+    small = arr[0] + k
+    big = arr[-1] - k
+    if small > big:
+        small, big = big, small
+    for i in range(1, n - 1):
+        subtract = arr[i] - k
+        add = arr[i] + k
+        if subtract < 0:
+            continue
+        small = min(small, subtract)
+        big = max(big, add)
+        ans = min(ans, big - small)
+    return ans
+arr1 = [1, 5, 8, 10]
+k1 = 2
+print("Minimum difference is:", get_min_diff(arr1, len(arr1), k1))
+arr2 = [3, 9, 12, 16, 20]
+k2 = 3
+print("Minimum difference is:", get_min_diff(arr2, len(arr2), k2))
+
+#problem 3
+def max_jumps(arr):
+    n = len(arr)
+    jumps = 0
+    i = 0
+    
+    while i < n - 1:
+        if arr[i] == 0:
+            return -1  # can't move further
+        i += arr[i]   # jump forward by arr[i] steps
+        jumps += 1
+    
+    return jumps
+
+# Example usage
+print(max_jumps([1, 3, 5, 8, 9, 2, 6, 7, 6, 8, 9]))  
+
+
+
+#problem 4
+def find_duplicate(nums):
+    # Phase 1: Detect cycle
+    slow = nums[0]
+    fast = nums[0]
+
+    while True:
+        slow = nums[slow]
+        fast = nums[nums[fast]]
+        if slow == fast:
+            break
+
+    # Phase 2: Find entry point of the cycle
+    slow = nums[0]
+    while slow != fast:
+        slow = nums[slow]
+        fast = nums[fast]
+
+    return slow
+# Examples
+print(find_duplicate([1, 3, 4, 2, 2])) 
+
+#problem 5
+def merge_arrays(a, b):
+    n = len(a)
+    m = len(b)
+    for i in range(n):
+        # If current element of a is greater than smallest of b
+        if a[i] > b[0]:
+            # Swap
+            a[i], b[0] = b[0], a[i]
+            # Re-sort b to maintain sorted order
+            b.sort()
+    return a, b
+a1 = [2, 4, 7, 10]
+b1 = [2, 3]
+print(merge_arrays(a1, b1))  # Output: ([2, 2, 3, 4], [7, 10])
+
+#problem 6
+def merge_intervals(intervals):
+    # Step 1: Sort intervals by start time
+    intervals.sort(key=lambda x: x[0])
+    
+    merged = []
+    
+    for interval in intervals:
+        # If merged list is empty OR no overlap, add interval
+        if not merged or merged[-1][1] < interval[0]:
+            merged.append(interval)
+        else:
+            # Overlap → merge by updating the end
+            merged[-1][1] = max(merged[-1][1], interval[1])
+    
+    return merged
+
+
+# Examples
+print(merge_intervals([[1,3],[2,6],[8,10],[15,18]]))  
+
+#problem 7
+def common_elements(arr1, arr2, arr3):
+    i = j = k = 0
+    result = []
+
+    while i < len(arr1) and j < len(arr2) and k < len(arr3):
+        # If all three are equal
+        if arr1[i] == arr2[j] == arr3[k]:
+            # Avoid duplicates
+            if not result or result[-1] != arr1[i]:
+                result.append(arr1[i])
+            i += 1
+            j += 1
+            k += 1
+        # Move the smallest pointer forward
+        elif arr1[i] < arr2[j]:
+            i += 1
+        elif arr2[j] < arr3[k]:
+            j += 1
+        else:
+            k += 1
+
+    return result if result else [-1]
+print(common_elements([1, 5, 10, 20, 40, 80],
+                      [6, 7, 20, 80, 100],
+                      [3, 4, 15, 20, 30, 70, 80, 120]))
+
+#problem 8
+def factorial_digits(n):
+    fact = 1
+    for i in range(2, n + 1):
+        fact *= i
+    digits = [int(d) for d in str(fact)]
+    return digits
+print(factorial_digits(5)) 
+def is_subset(a, b):
+    for element in b:
+        if element not in a:
+            return False
+    return True
+print(is_subset([11, 7, 1, 13, 21, 3, 7, 3], [11, 3, 7, 1, 7])) 
+
+#problem 9
+def triplet_sum(arr, target):
+    arr.sort()
+    n = len(arr)
+    for i in range(n - 2):
+        left = i + 1
+        right = n - 1
+        while left < right:
+            current_sum = arr[i] + arr[left] + arr[right]
+
+            if current_sum == target:
+                return True
+            elif current_sum < target:
+                left += 1
+            else:
+                right -= 1
+    return False
+print(triplet_sum([1, 4, 45, 6, 10, 8], 13))  
+
+#problem 10
+def trap_rainwater(arr):
+    n = len(arr)
+    if n == 0:
+        return 0
+
+    # Arrays to store left max and right max for each element
+    left_max = [0] * n
+    right_max = [0] * n
+
+    # Fill left_max
+    left_max[0] = arr[0]
+    for i in range(1, n):
+        left_max[i] = max(left_max[i - 1], arr[i])
+    right_max[n - 1] = arr[n - 1]
+    for i in range(n - 2, -1, -1):
+        right_max[i] = max(right_max[i + 1], arr[i])
+    water = 0
+    for i in range(n):
+        water += min(left_max[i], right_max[i]) - arr[i]
+    return water
+print(trap_rainwater([3, 0, 0, 2, 0, 4]))       
